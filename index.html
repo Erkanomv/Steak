@@ -28,7 +28,7 @@ button,input{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-
   </div>
   <div class="side-card" id="devCard">
     <b>Dev Wallet</b>
-    <p>Spawn play credits locally. They have no cash value and never leave this browser.</p>
+    <p>Spawn play credits locally. Your wallet, settings, game history, and active Mines progress save in this browser.</p>
     <div class="mint-row"><input id="mintAmount" type="number" min="1" value="10000"><button id="mint">+</button></div>
     <button class="reset" id="reset">Reset save</button>
   </div>
@@ -38,7 +38,7 @@ button,input{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-
     <div class="search">🔎 Search games</div>
     <div style="display:flex;align-items:center">
       <div class="wallet"><div class="balance">◎ <span id="bal">0.00</span></div><button id="walletMint">Wallet</button></div>
-      <div class="status">PLAY MONEY • NO REAL VALUE</div>
+      <div class="status">PLAY MONEY • NO REAL VALUE • SAVED LOCALLY</div>
     </div>
   </header>
   <div class="content">
@@ -80,31 +80,298 @@ button,input{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-
 </div>
 <script>
 (function(){
-const S={balance:+localStorage.getItem('steak.balance')||10000,history:JSON.parse(localStorage.getItem('steak.history')||'[]'),game:'dice',mines:null,crashHistory:JSON.parse(localStorage.getItem('steak.crash')||'[1.22,2.14,1.06,4.72,1.48,8.11]')};
-const $=id=>document.getElementById(id), money=n=>Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-function save(){localStorage.setItem('steak.balance',S.balance);localStorage.setItem('steak.history',JSON.stringify(S.history.slice(0,12)));localStorage.setItem('steak.crash',JSON.stringify(S.crashHistory.slice(0,6)));render()}
-function render(){ $('bal').textContent=money(S.balance);$('heroBal').textContent=money(S.balance);$('recentRows').innerHTML=S.history.slice(0,8).map(x=>'<div class="row"><div class="p">'+x.game+'</div><div>◎ '+money(x.bet)+'</div><div class="'+(x.profit>=0?'green':'red')+'">'+(x.profit>=0?'+':'')+money(x.profit)+'</div><div>'+x.result+'</div></div>').join('')||'<div class="row"><div class="p">No rounds yet</div><div>—</div><div>—</div><div>—</div></div>';$('crashHistory').innerHTML=S.crashHistory.map(x=>'<div class="hist '+(x>=2?'green':'')+'">'+Number(x).toFixed(2)+'×</div>').join('')}
-function history(game,bet,profit,result){S.history.unshift({game:game,bet:bet,profit:profit,result:result});save()}
-function betValue(){const v=Math.floor(+$('betAmount').value);if(!v||v<1)return 0;return v}
-function canBet(v){if(!v){msg('Enter a bet amount.');return false}if(v>S.balance){msg('Not enough play credits — mint more in Dev Wallet.');return false}return true}
+const SAVE_KEY='steak.save.v2';
+const DEFAULTS={
+  version:2,
+  balance:10000,
+  history:[],
+  game:'dice',
+  crashHistory:[1.22,2.14,1.06,4.72,1.48,8.11],
+  stats:{rounds:0,wins:0,wagered:0,biggestWin:0},
+  settings:{betAmount:100,rollUnder:49.5,mineCount:5,autoCash:2,mintAmount:10000},
+  mines:null,
+  pendingCrash:null
+};
+function clone(v){return JSON.parse(JSON.stringify(v))}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(raw){
+      const saved=JSON.parse(raw);
+      return Object.assign(clone(DEFAULTS),saved,{
+        settings:Object.assign({},DEFAULTS.settings,saved.settings||{}),
+        stats:Object.assign({},DEFAULTS.stats,saved.stats||{})
+      });
+    }
+  }catch(e){}
+  const migrated=clone(DEFAULTS);
+  const oldBal=localStorage.getItem('steak.balance');
+  const oldHist=localStorage.getItem('steak.history');
+  const oldCrash=localStorage.getItem('steak.crash');
+  if(oldBal!==null && isFinite(+oldBal)) migrated.balance=+oldBal;
+  try{if(oldHist) migrated.history=JSON.parse(oldHist)}catch(e){}
+  try{if(oldCrash) migrated.crashHistory=JSON.parse(oldCrash)}catch(e){}
+  return migrated;
+}
+const S=loadState();
+const $=id=>document.getElementById(id);
+const money=n=>Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+function cleanState(){
+  return {
+    version:2,
+    balance:S.balance,
+    history:S.history.slice(0,20),
+    game:S.game,
+    crashHistory:S.crashHistory.slice(0,8),
+    stats:S.stats,
+    settings:S.settings,
+    mines:S.mines,
+    pendingCrash:S.pendingCrash
+  };
+}
+function save(renderNow=true){
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(cleanState()))}catch(e){}
+  if(renderNow) render();
+}
+function persistControls(){
+  S.settings.betAmount=Math.max(1,+$('betAmount').value||100);
+  S.settings.rollUnder=Math.max(5,Math.min(95,+$('rollUnder').value||49.5));
+  S.settings.mineCount=+$('mineCount').value||5;
+  S.settings.autoCash=Math.max(1.01,+$('autoCash').value||2);
+  S.settings.mintAmount=Math.max(1,+$('mintAmount').value||10000);
+  save(false);
+}
+function restoreControls(){
+  $('betAmount').value=S.settings.betAmount;
+  $('rollUnder').value=S.settings.rollUnder;
+  $('mineCount').value=String(S.settings.mineCount);
+  $('autoCash').value=Number(S.settings.autoCash).toFixed(2);
+  $('mintAmount').value=S.settings.mintAmount;
+  updateDiceUi(S.settings.rollUnder);
+}
+function render(){
+  $('bal').textContent=money(S.balance);
+  $('heroBal').textContent=money(S.balance);
+  $('recentRows').innerHTML=S.history.slice(0,8).map(x=>'<div class="row"><div class="p">'+x.game+'</div><div>◎ '+money(x.bet)+'</div><div class="'+(x.profit>=0?'green':'red')+'">'+(x.profit>=0?'+':'')+money(x.profit)+'</div><div>'+x.result+'</div></div>').join('')||'<div class="row"><div class="p">No rounds yet</div><div>—</div><div>—</div><div>—</div></div>';
+  $('crashHistory').innerHTML=S.crashHistory.map(x=>'<div class="hist '+(x>=2?'green':'')+'">'+Number(x).toFixed(2)+'×</div>').join('');
+}
+function addHistory(game,bet,profit,result){
+  S.history.unshift({game:game,bet:bet,profit:profit,result:result,at:Date.now()});
+  S.stats.rounds++;
+  S.stats.wagered+=bet;
+  if(profit>0){
+    S.stats.wins++;
+    S.stats.biggestWin=Math.max(S.stats.biggestWin,profit);
+  }
+  save();
+}
+function betValue(){
+  const v=Math.floor(+$('betAmount').value);
+  if(!v||v<1)return 0;
+  S.settings.betAmount=v;
+  save(false);
+  return v;
+}
+function canBet(v){
+  if(!v){msg('Enter a bet amount.');return false}
+  if(v>S.balance){msg('Not enough play credits — mint more in Dev Wallet.');return false}
+  return true;
+}
 function msg(t){$('controlMsg').textContent=t}
-function setGame(g){S.game=g;document.querySelectorAll('[data-open]').forEach(b=>b.classList.toggle('active',b.dataset.open===g));['dice','mines','crash'].forEach(n=>$(n+'Stage').classList.toggle('hide',n!==g));$('diceFields').classList.toggle('hide',g!=='dice');$('minesFields').classList.toggle('hide',g!=='mines');$('crashFields').classList.toggle('hide',g!=='crash');$('betBtn').textContent=g==='mines'?'Start Mines':'Bet';S.mines=null;if(g==='mines')makeGrid();msg('Playing '+g[0].toUpperCase()+g.slice(1)+' with play credits.')}
-document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{if(b.dataset.open==='lobby'){window.scrollTo({top:0,behavior:'smooth'});return}setGame(b.dataset.open)});
-document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{let v=+$('betAmount').value||0,q=b.dataset.q;if(q==='.5')v/=2;else if(q==='2')v*=2;else v+=+q;$('betAmount').value=Math.max(1,Math.floor(v))});
-$('rollUnder').oninput=e=>{const t=+e.target.value;$('chanceLabel').textContent=t.toFixed(2)+'%';$('targetText').textContent=t.toFixed(2);$('payoutLabel').textContent=(99/t).toFixed(2)+'×';$('diceFill').style.width=t+'%';$('diceMarker').style.left=t+'%'};
-function playDice(){const bet=betValue();if(!canBet(bet))return;const t=+$('rollUnder').value,roll=Math.random()*100,win=roll<t,mult=99/t,profit=win?bet*(mult-1):-bet;S.balance+=profit;$('diceResult').textContent=roll.toFixed(2);$('diceBanner').className='result-banner '+(win?'win':'lose');$('diceBanner').textContent=win?'WIN +◎ '+money(profit):'LOSS -◎ '+money(bet);history('Dice',bet,profit,roll.toFixed(2))}
-function makeGrid(){const grid=$('minesGrid');grid.innerHTML='';for(let i=0;i<25;i++){const b=document.createElement('button');b.className='tile';b.textContent='◆';b.onclick=()=>revealMine(i,b);grid.appendChild(b)}}
-function startMines(){const bet=betValue();if(!canBet(bet))return;const count=+$('mineCount').value;S.balance-=bet;const ids=[...Array(25).keys()].sort(()=>Math.random()-.5).slice(0,count);S.mines={bet:bet,mines:new Set(ids),safe:0,count:count};makeGrid();$('betBtn').textContent='Cash Out';msg('Round live — pick a tile or cash out.');save()}
-function revealMine(i,b){if(!S.mines)return;if(b.classList.contains('revealed')||b.classList.contains('mine'))return;if(S.mines.mines.has(i)){b.classList.add('mine');b.textContent='💣';const bet=S.mines.bet;S.mines=null;$('betBtn').textContent='Start Mines';msg('Mine hit. Round lost.');history('Mines',bet,-bet,'💣')}else{b.classList.add('revealed');b.textContent='💎';S.mines.safe++;const mult=Math.pow(25/(25-S.mines.count),S.mines.safe)*.97;msg('Safe tile • current cashout '+mult.toFixed(2)+'×')}}
-function cashMines(){if(!S.mines)return startMines();const m=S.mines,mult=Math.pow(25/(25-m.count),m.safe)*.97,pay=m.bet*Math.max(1,mult),profit=pay-m.bet;S.balance+=pay;S.mines=null;$('betBtn').textContent='Start Mines';msg('Cashed out at '+Math.max(1,mult).toFixed(2)+'×');history('Mines',m.bet,profit,Math.max(1,mult).toFixed(2)+'×')}
+function updateDiceUi(v){
+  const t=+v;
+  $('chanceLabel').textContent=t.toFixed(2)+'%';
+  $('targetText').textContent=t.toFixed(2);
+  $('payoutLabel').textContent=(99/t).toFixed(2)+'×';
+  $('diceFill').style.width=t+'%';
+  $('diceMarker').style.left=t+'%';
+}
+function setGame(g,persist=true){
+  if(!['dice','mines','crash'].includes(g))g='dice';
+  S.game=g;
+  document.querySelectorAll('[data-open]').forEach(b=>b.classList.toggle('active',b.dataset.open===g));
+  ['dice','mines','crash'].forEach(n=>$(n+'Stage').classList.toggle('hide',n!==g));
+  $('diceFields').classList.toggle('hide',g!=='dice');
+  $('minesFields').classList.toggle('hide',g!=='mines');
+  $('crashFields').classList.toggle('hide',g!=='crash');
+  $('betBtn').textContent=g==='mines'?(S.mines?'Cash Out':'Start Mines'):'Bet';
+  if(g==='mines') makeGrid();
+  if(!S.pendingCrash || g!=='crash') $('betBtn').disabled=false;
+  if(S.pendingCrash && g==='crash') $('betBtn').disabled=true;
+  msg(g==='mines'&&S.mines?'Mines round restored from this browser.':'Playing '+g[0].toUpperCase()+g.slice(1)+' with play credits.');
+  if(persist) save(false);
+}
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
+  if(b.dataset.open==='lobby'){window.scrollTo({top:0,behavior:'smooth'});return}
+  setGame(b.dataset.open);
+});
+document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{
+  let v=+$('betAmount').value||0,q=b.dataset.q;
+  if(q==='.5')v/=2;else if(q==='2')v*=2;else v+=+q;
+  $('betAmount').value=Math.max(1,Math.floor(v));
+  persistControls();
+});
+$('betAmount').addEventListener('change',persistControls);
+$('mineCount').addEventListener('change',persistControls);
+$('autoCash').addEventListener('change',persistControls);
+$('mintAmount').addEventListener('change',persistControls);
+$('rollUnder').oninput=e=>{
+  const t=+e.target.value;
+  S.settings.rollUnder=t;
+  updateDiceUi(t);
+  save(false);
+};
+function playDice(){
+  const bet=betValue();
+  if(!canBet(bet))return;
+  const t=+$('rollUnder').value,roll=Math.random()*100,win=roll<t,mult=99/t,profit=win?bet*(mult-1):-bet;
+  S.balance+=profit;
+  $('diceResult').textContent=roll.toFixed(2);
+  $('diceBanner').className='result-banner '+(win?'win':'lose');
+  $('diceBanner').textContent=win?'WIN +◎ '+money(profit):'LOSS -◎ '+money(bet);
+  addHistory('Dice',bet,profit,roll.toFixed(2));
+}
+function makeGrid(){
+  const grid=$('minesGrid');
+  grid.innerHTML='';
+  for(let i=0;i<25;i++){
+    const b=document.createElement('button');
+    b.className='tile';
+    b.textContent='◆';
+    if(S.mines && S.mines.revealed.includes(i)){
+      b.classList.add('revealed');
+      b.textContent='💎';
+    }
+    b.onclick=()=>revealMine(i,b);
+    grid.appendChild(b);
+  }
+}
+function startMines(){
+  const bet=betValue();
+  if(!canBet(bet))return;
+  const count=+$('mineCount').value;
+  S.settings.mineCount=count;
+  S.balance-=bet;
+  const ids=[...Array(25).keys()].sort(()=>Math.random()-.5).slice(0,count);
+  S.mines={bet:bet,mines:ids,revealed:[],count:count,startedAt:Date.now()};
+  makeGrid();
+  $('betBtn').textContent='Cash Out';
+  msg('Round live — pick a tile or cash out. Progress saves automatically.');
+  save();
+}
+function revealMine(i,b){
+  if(!S.mines)return;
+  if(S.mines.revealed.includes(i))return;
+  if(S.mines.mines.includes(i)){
+    b.classList.add('mine');
+    b.textContent='💣';
+    const bet=S.mines.bet;
+    S.mines=null;
+    $('betBtn').textContent='Start Mines';
+    msg('Mine hit. Round lost.');
+    addHistory('Mines',bet,-bet,'💣');
+  }else{
+    S.mines.revealed.push(i);
+    b.classList.add('revealed');
+    b.textContent='💎';
+    const safe=S.mines.revealed.length;
+    const mult=Math.pow(25/(25-S.mines.count),safe)*.97;
+    msg('Safe tile • current cashout '+mult.toFixed(2)+'× • saved');
+    save();
+  }
+}
+function cashMines(){
+  if(!S.mines)return startMines();
+  const m=S.mines,safe=m.revealed.length,mult=Math.pow(25/(25-m.count),safe)*.97,pay=m.bet*Math.max(1,mult),profit=pay-m.bet;
+  S.balance+=pay;
+  S.mines=null;
+  $('betBtn').textContent='Start Mines';
+  msg('Cashed out at '+Math.max(1,mult).toFixed(2)+'×');
+  addHistory('Mines',m.bet,profit,Math.max(1,mult).toFixed(2)+'×');
+}
 let crashBusy=false;
-function playCrash(){if(crashBusy)return;const bet=betValue();if(!canBet(bet))return;S.balance-=bet;save();crashBusy=true;$('betBtn').disabled=true;const r=Math.random(),point=Math.max(1.01,Math.min(25,0.99/(1-r))),auto=Math.max(1.01,+$('autoCash').value||2),start=performance.now();msg('Round live…');
-function tick(now){const elapsed=(now-start)/1000,current=Math.min(point,1+elapsed*elapsed*.7+elapsed*.55);$('crashMult').textContent=current.toFixed(2)+'×';$('rocket').style.left=Math.min(82,10+elapsed*18)+'%';$('rocket').style.bottom=Math.min(72,13+elapsed*12)+'%';if(current>=auto&&auto<point){const profit=bet*(auto-1);S.balance+=bet*auto;finish(profit,'Cashout '+auto.toFixed(2)+'×');return}if(current>=point){finish(-bet,'Crashed '+point.toFixed(2)+'×');return}requestAnimationFrame(tick)}
-function finish(profit,result){S.crashHistory.unshift(point);history('Crash',bet,profit,result);crashBusy=false;$('betBtn').disabled=false;$('crashMult').textContent=point.toFixed(2)+'×';msg(profit>=0?'Cashed out +◎ '+money(profit):'Crashed before cashout.')}requestAnimationFrame(tick)}
-$('betBtn').onclick=()=>{if(S.game==='dice')playDice();else if(S.game==='mines')(S.mines?cashMines():startMines());else playCrash()};
-function mint(){const a=Math.max(1,Math.floor(+$('mintAmount').value||10000));S.balance+=a;msg('Minted ◎ '+money(a)+' local play credits.');save()}
-$('mint').onclick=mint;$('walletMint').onclick=()=>{S.balance+=1000;msg('Wallet shortcut minted ◎ 1,000.00.');save()};$('reset').onclick=()=>{localStorage.removeItem('steak.balance');localStorage.removeItem('steak.history');localStorage.removeItem('steak.crash');location.reload()};$('showDev').onclick=()=>$('devCard').scrollIntoView({behavior:'smooth'});makeGrid();render();setGame('dice');
+function crashValue(elapsed){return 1+elapsed*elapsed*.7+elapsed*.55}
+function settleCrash(win,point,bet,auto){
+  if(!S.pendingCrash)return;
+  let profit=-bet,result='Crashed '+point.toFixed(2)+'×';
+  if(win){
+    profit=bet*(auto-1);
+    S.balance+=bet*auto;
+    result='Cashout '+auto.toFixed(2)+'×';
+  }
+  S.pendingCrash=null;
+  S.crashHistory.unshift(point);
+  crashBusy=false;
+  $('betBtn').disabled=false;
+  $('crashMult').textContent=point.toFixed(2)+'×';
+  msg(win?'Cashed out +◎ '+money(profit):'Crashed before cashout.');
+  addHistory('Crash',bet,profit,result);
+}
+function runCrash(p){
+  crashBusy=true;
+  if(S.game==='crash') $('betBtn').disabled=true;
+  function tick(){
+    if(!S.pendingCrash)return;
+    const elapsed=Math.max(0,(Date.now()-p.startedAt)/1000);
+    const current=Math.min(p.point,crashValue(elapsed));
+    $('crashMult').textContent=current.toFixed(2)+'×';
+    $('rocket').style.left=Math.min(82,10+elapsed*18)+'%';
+    $('rocket').style.bottom=Math.min(72,13+elapsed*12)+'%';
+    if(current>=p.auto && p.auto<p.point){settleCrash(true,p.point,p.bet,p.auto);return}
+    if(current>=p.point){settleCrash(false,p.point,p.bet,p.auto);return}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+function playCrash(){
+  if(crashBusy||S.pendingCrash)return;
+  const bet=betValue();
+  if(!canBet(bet))return;
+  S.balance-=bet;
+  const r=Math.random(),point=Math.max(1.01,Math.min(25,0.99/(1-r))),auto=Math.max(1.01,+$('autoCash').value||2);
+  S.settings.autoCash=auto;
+  S.pendingCrash={bet:bet,point:point,auto:auto,startedAt:Date.now()};
+  msg('Round live… progress is saved locally.');
+  save();
+  runCrash(S.pendingCrash);
+}
+$('betBtn').onclick=()=>{
+  if(S.game==='dice')playDice();
+  else if(S.game==='mines')(S.mines?cashMines():startMines());
+  else playCrash();
+};
+function mint(){
+  const a=Math.max(1,Math.floor(+$('mintAmount').value||10000));
+  S.settings.mintAmount=a;
+  S.balance+=a;
+  msg('Minted ◎ '+money(a)+' local play credits.');
+  save();
+}
+$('mint').onclick=mint;
+$('walletMint').onclick=()=>{
+  S.balance+=1000;
+  msg('Wallet shortcut minted ◎ 1,000.00.');
+  save();
+};
+$('reset').onclick=()=>{
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem('steak.balance');
+  localStorage.removeItem('steak.history');
+  localStorage.removeItem('steak.crash');
+  location.reload();
+};
+$('showDev').onclick=()=>$('devCard').scrollIntoView({behavior:'smooth'});
+window.addEventListener('beforeunload',persistControls);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)persistControls()});
+restoreControls();
+render();
+setGame(S.game,false);
+if(S.mines) makeGrid();
+if(S.pendingCrash){
+  msg('Resuming saved Crash round…');
+  runCrash(S.pendingCrash);
+}
+save(false);
 })();
-</script>
-</body>
+</script>\n</body>
 </html>
