@@ -1,104 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#071824">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#071824" />
+  <meta name="color-scheme" content="dark" />
   <title>Steak — Play Money Casino</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/styles/base.css" />
+  <link rel="stylesheet" href="assets/styles/layout.css" />
+  <link rel="stylesheet" href="assets/styles/games.css" />
 </head>
 <body>
-<div class="shell">
-  <aside class="sidebar">
-    <button class="logo" id="logo" aria-label="Steak home">
-      <span class="logo-mark">S</span><span class="logo-word">steak</span>
-    </button>
-    <nav>
-      <button class="nav-item active" data-scroll="lobby"><span>◆</span><b>Casino</b></button>
-      <button class="nav-item" data-scroll="originals"><span>✦</span><b>Originals</b></button>
-      <button class="nav-item"><span>▦</span><b>Slots</b></button>
-      <button class="nav-item"><span>♠</span><b>Table Games</b></button>
-    </nav>
-    <div class="side-divider"></div>
-    <div class="side-label">Play money</div>
-    <div class="side-note">Local browser progress<br>No deposits • No withdrawals</div>
-  </aside>
-
-  <main>
-    <header class="topbar">
-      <div class="search-wrap"><span>⌕</span><input id="search" placeholder="Search games"></div>
-      <div class="wallet">
-        <span class="coin">◎</span>
-        <strong id="balance">5.00</strong>
-        <small>PLAY</small>
-      </div>
-    </header>
-
-    <div class="page">
-      <section class="hero" id="lobby">
-        <div>
-          <span class="eyebrow">STEAK ORIGINALS</span>
-          <h1>Play the house.<br><em>Not your wallet.</em></h1>
-          <p>Fast casino-style games with browser-only credits. Your balance and progress stay on this device.</p>
-        </div>
-        <div class="hero-stat">
-          <small>Local balance</small>
-          <strong>◎ <span id="heroBalance">5.00</span></strong>
-          <span>no cash value</span>
-        </div>
-      </section>
-
-      <section id="originals">
-        <div class="section-title">
-          <div><span class="diamond">◆</span><h2>Steak Originals</h2></div>
-          <span id="gameCount">12 games</span>
-        </div>
-        <div class="game-grid" id="gameGrid"></div>
-      </section>
-
-      <section class="play-panel" id="playPanel">
-        <div class="panel-head">
-          <div><span id="gameIcon">🎲</span><div><small>STEAK ORIGINAL</small><h2 id="gameTitle">Dice</h2></div></div>
-          <button class="close-game" id="closeGame">×</button>
-        </div>
-        <div class="game-layout">
-          <aside class="bet-panel">
-            <label>Bet Amount <span>◎ credits</span></label>
-            <div class="bet-input-row"><input id="betAmount" type="number" min="0.01" step="0.01" value="0.25"><button data-bet="half">½</button><button data-bet="double">2×</button></div>
-            <div id="gameControls"></div>
-            <button class="primary" id="primaryAction">Bet</button>
-            <div class="message" id="message">Play money only.</div>
-          </aside>
-          <div class="stage" id="stage"></div>
-        </div>
-      </section>
-
-      <section class="recent">
-        <div class="section-title"><div><span class="diamond">◇</span><h2>Recent Plays</h2></div><span>saved locally</span></div>
-        <div class="table-head"><span>Game</span><span>Bet</span><span>Profit</span><span>Result</span></div>
-        <div id="history"></div>
-      </section>
-
-      <footer>Steak is an independent fictional play-money casino simulator. Credits cannot be purchased, transferred, or withdrawn.</footer>
-    </div>
-  </main>
-</div>
-
-<div class="modal-backdrop hidden" id="adminModal">
-  <div class="admin-modal">
-    <div class="modal-head"><div><small>LOCAL TOOLS</small><h2>Steak Admin</h2></div><button id="closeAdmin">×</button></div>
-    <p>This menu only edits fake credits stored in this browser.</p>
-    <label>Amount</label>
-    <input id="adminAmount" type="number" min="0" step="1" value="1000">
-    <div class="admin-grid">
-      <button id="adminAdd">Add credits</button>
-      <button id="adminSet">Set balance</button>
-      <button id="adminFive">Set to 5</button>
-      <button id="adminReset" class="danger">Reset all progress</button>
-    </div>
-  </div>
-</div>
-
-<script src="app.js"></script>
+  <div id="app"></div>
+  <div id="toastRoot" class="toast-root" aria-live="polite"></div>
+  <div id="modalRoot"></div>
+  <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>

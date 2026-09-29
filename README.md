@@ -1,17 +1,42 @@
 # Steak
 
-Steak is a fictional, play-money casino simulator with a dark crypto-casino-inspired interface.
+Steak is a fictional, browser-only **play-money casino simulator**. It is not affiliated with Stake or any gambling operator.
 
-## Features
-- Responsive casino lobby
-- Dice, Mines, and Crash-style play-money games
-- Local wallet stored in `localStorage`
-- Dev Wallet that can mint unlimited demo credits
-- No deposits, withdrawals, payments, crypto, or real-money value
-- GitHub Pages deployment workflow included
+## What is included
 
-## Run locally
-Open `index.html` in a browser.
+- Dedicated animated game screens for:
+  - Plinko
+  - European Roulette
+  - Blackjack 21
+  - Mines
+  - Crash
+  - Dice
+  - Limbo
+  - Coin Flip
+  - Cases + local inventory
+  - Cups
+  - Three slot-machine themes
+  - Chicken
+- Modular front-end architecture under `assets/js/` and `assets/styles/`
+- Local browser progress saving with migration from older Steak saves
+- Fresh browsers start with **5.00 play credits**
+- Hidden local admin menu: click the Steak logo five times
+- Responsive desktop/tablet/mobile navigation
+- Web Audio feedback and game-specific animations
+- Apple-device translucent/glass treatment using CSS backdrop filters
 
-## Important
-Steak is an independent demo project. It is not affiliated with Stake or any gambling operator. Credits are simulated and have no cash value.
+## Play-money only
+
+Credits have no cash value. The project includes no deposits, withdrawals, payment processing, crypto transfers, or real-money wagering.
+
+## Running locally
+
+Serve the repository over HTTP so ES modules load correctly, for example:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000`.
+
+GitHub Pages deployment is configured in `.github/workflows/pages.yml`.

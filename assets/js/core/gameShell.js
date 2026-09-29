@@ -1,0 +1,3 @@
+export function shell(root,{title,subtitle='',controls,stage,info=[]}){
+  root.innerHTML=`<div class="game-page"><div class="game-topline"><div class="game-breadcrumb"><a href="#/">Casino</a><span>›</span><b>${title}</b></div><span class="badge green">PLAY MONEY</span></div><div class="game-shell"><aside class="game-controls"><div><h2>${title}</h2><div class="control-note">${subtitle}</div></div>${controls}</aside><section class="game-stage">${stage}</section></div>${info.length?`<div class="game-info-strip">${info.map(x=>`<div class="info-card"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('')}</div>`:''}</div>`
+}
