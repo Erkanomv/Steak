@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f212e">
+<title>Steak — Play Money Casino</title>
+<style>
+:root{--bg:#0f212e;--panel:#172f3f;--panel2:#213b4b;--panel3:#0b1a23;--line:#2b4555;--text:#eef4f7;--muted:#9eb2bf;--green:#00e701;--green2:#00c402;--red:#ff4d64;--gold:#f6c85f;--shadow:0 16px 40px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0f212e,#0b1821 72%);color:var(--text);font:500 14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.sidebar{background:#0d1f2b;border-right:1px solid rgba(255,255,255,.05);padding:20px 14px;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:10px;font-size:29px;font-weight:900;letter-spacing:-1.8px;margin:2px 8px 22px}.brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,#00e701,#0bbd61);display:grid;place-items:center;color:#06210b;box-shadow:0 8px 24px rgba(0,231,1,.22);font-size:20px}.play-badge{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#06210b;background:#8df28d;border-radius:999px;padding:4px 7px;margin-left:auto}.nav-title{font-size:11px;color:#6f8999;text-transform:uppercase;letter-spacing:.9px;margin:18px 10px 7px}.nav button{width:100%;border:0;background:transparent;color:#c5d2da;padding:11px 12px;border-radius:8px;text-align:left;margin:2px 0;display:flex;gap:10px;align-items:center}.nav button:hover,.nav button.active{background:#173242;color:white}.nav .ico{width:24px;text-align:center}.side-card{margin-top:18px;background:linear-gradient(145deg,#153142,#102836);border:1px solid #23495d;border-radius:12px;padding:14px}.side-card b{display:block;margin-bottom:5px}.side-card p{font-size:12px;color:var(--muted);margin:0 0 12px}.mint-row{display:flex;gap:7px}.mint-row input{min-width:0;width:100%;background:#0b1a23;border:1px solid #2d4b5d;color:white;border-radius:7px;padding:9px}.mint-row button{border:0;background:var(--green);color:#06210b;font-weight:900;border-radius:7px;padding:0 11px}.reset{margin-top:7px;width:100%;border:1px solid #385261;background:transparent;color:#a9bbc6;border-radius:7px;padding:8px}
+.main{min-width:0}.topbar{height:72px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,31,43,.86);border-bottom:1px solid rgba(255,255,255,.05);backdrop-filter:blur(16px);position:sticky;top:0;z-index:10}.search{color:#8fa5b3}.wallet{display:flex;align-items:center;background:#102631;border:1px solid #2a4657;border-radius:9px;overflow:hidden;box-shadow:var(--shadow)}.balance{padding:11px 15px;font-weight:800;min-width:150px}.wallet button{border:0;background:var(--green);color:#06210b;font-weight:900;padding:12px 18px}.status{font-size:11px;color:#91a8b6;margin-left:12px}.content{padding:26px;max-width:1440px;margin:auto}.hero{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(120deg,#17394b,#102a39 55%,#11311f);border:1px solid #244a5d;border-radius:16px;padding:25px 28px;box-shadow:var(--shadow);overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:270px;height:270px;border-radius:50%;background:radial-gradient(circle,rgba(0,231,1,.2),transparent 65%);right:-40px;top:-80px}.hero h1{font-size:34px;line-height:1.05;margin:0 0 9px;letter-spacing:-1.2px}.hero p{margin:0;color:#a9bdc8;max-width:620px}.hero strong{color:#8df28d}.hero-chip{z-index:1;background:#0b1a23;border:1px solid #315164;border-radius:12px;padding:14px 18px;text-align:right;min-width:185px}.hero-chip small{color:#8fa7b5}.hero-chip div{font-size:24px;font-weight:900;margin-top:2px}.section-head{display:flex;justify-content:space-between;align-items:center;margin:26px 2px 12px}.section-head h2{font-size:18px;margin:0}.section-head span{color:#7f98a8;font-size:12px}.games{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.game-card{border:1px solid #25485a;background:#132c3b;border-radius:14px;overflow:hidden;min-height:180px;position:relative;transition:.18s}.game-card:hover{transform:translateY(-2px);border-color:#37657a}.game-art{height:132px;display:grid;place-items:center;font-size:56px;background:radial-gradient(circle at 50% 40%,#29566b,#142c3a 70%)}.game-info{padding:12px 14px;display:flex;align-items:center;justify-content:space-between}.game-info b{font-size:15px}.game-info span{font-size:11px;background:#213f4f;color:#a9c0cd;border-radius:5px;padding:4px 6px}.game-card button{position:absolute;inset:0;opacity:0}.panel{margin-top:20px;background:#122936;border:1px solid #244759;border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.game-shell{display:grid;grid-template-columns:330px 1fr;min-height:430px}.controls{background:#0f2430;padding:18px;border-right:1px solid #254656}.field{margin-bottom:14px}.field label{display:flex;justify-content:space-between;color:#9bb0bd;font-size:12px;margin-bottom:7px}.field input,.field select{width:100%;background:#0a1922;border:1px solid #304d5d;border-radius:8px;color:white;padding:11px 12px}.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}.quick button,.tabs button{border:1px solid #315064;background:#173544;color:#b5c6cf;border-radius:7px;padding:7px}.bet-btn{width:100%;border:0;background:var(--green);color:#05220a;font-weight:900;border-radius:8px;padding:13px;font-size:15px;box-shadow:0 8px 22px rgba(0,231,1,.14)}.bet-btn:active{transform:translateY(1px)}.game-stage{padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;min-width:0}.tabs{display:flex;gap:7px;margin-bottom:15px}.tabs button.active{background:#2a4d5e;color:#fff}.dice-track{height:64px;background:#0a1922;border:1px solid #2a4c5e;border-radius:32px;position:relative;width:min(760px,92%);margin:28px 0 18px}.dice-fill{height:100%;border-radius:32px 0 0 32px;background:linear-gradient(90deg,#ff4d64,#ff6b76);width:50%}.dice-marker{position:absolute;top:-10px;width:3px;height:84px;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.5);left:50%}.dice-result{font-size:56px;font-weight:950;letter-spacing:-2px}.sub{color:#89a1af}.result-banner{margin-top:14px;padding:10px 14px;border-radius:9px;font-weight:800}.win{background:rgba(0,231,1,.12);color:#72f472;border:1px solid rgba(0,231,1,.3)}.lose{background:rgba(255,77,100,.1);color:#ff8898;border:1px solid rgba(255,77,100,.28)}.mines-grid{display:grid;grid-template-columns:repeat(5,58px);gap:8px}.tile{height:58px;border:1px solid #315365;border-radius:8px;background:linear-gradient(#244556,#1a3746);display:grid;place-items:center;font-size:25px;box-shadow:inset 0 1px rgba(255,255,255,.03)}.tile.revealed{background:#143120;border-color:#2a7c39}.tile.mine{background:#3a1d27;border-color:#8b3546}.crash-area{width:min(780px,95%);height:250px;border-radius:12px;background:linear-gradient(180deg,#0b1c26,#0a151c);border:1px solid #294758;position:relative;overflow:hidden;display:grid;place-items:center}.crash-area:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px}.mult{font-size:66px;font-weight:950;z-index:2;letter-spacing:-3px}.rocket{position:absolute;left:10%;bottom:13%;font-size:34px;transform:rotate(-35deg)}.history{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px;width:min(780px,95%)}.hist{background:#173240;border:1px solid #2a4a5b;border-radius:7px;padding:8px;text-align:center;font-size:12px}.recent{margin-top:20px;background:#102631;border:1px solid #234757;border-radius:13px;overflow:hidden}.recent-head,.row{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;padding:11px 14px}.recent-head{color:#7893a3;background:#0d202b;font-size:11px;text-transform:uppercase}.row{border-top:1px solid rgba(255,255,255,.045);color:#b8c8d1}.row .p{font-weight:800}.green{color:#70ef71}.red{color:#ff7b8c}.footer{text-align:center;color:#657e8d;font-size:11px;padding:24px}.hide{display:none!important}
+@media(max-width:900px){.app{grid-template-columns:76px 1fr}.sidebar{padding:16px 8px}.brand span,.nav button span:not(.ico),.nav-title,.side-card{display:none}.brand{justify-content:center;margin-left:0;margin-right:0}.play-badge{display:none}.game-shell{grid-template-columns:1fr}.controls{border-right:0;border-bottom:1px solid #254656}.games{grid-template-columns:1fr 1fr}.topbar{padding:0 14px}.content{padding:16px}.hero-chip{display:none}.game-stage{padding:18px}.mines-grid{grid-template-columns:repeat(5,48px)}.tile{height:48px}.history{grid-template-columns:repeat(3,1fr)}}@media(max-width:570px){.app{display:block}.sidebar{display:none}.games{grid-template-columns:1fr}.topbar{height:62px}.search{display:none}.balance{min-width:120px}.hero h1{font-size:27px}.content{padding:12px}.recent-head,.row{grid-template-columns:1.1fr .9fr .9fr}.recent-head>:last-child,.row>:last-child{display:none}.mines-grid{grid-template-columns:repeat(5,44px);gap:6px}.tile{height:44px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-mark">S</div><span>Steak</span><i class="play-badge">play</i></div>
+  <div class="nav">
+    <div class="nav-title">Casino</div>
+    <button class="active" data-open="lobby"><span class="ico">⌂</span><span>Lobby</span></button>
+    <button data-open="dice"><span class="ico">◈</span><span>Dice</span></button>
+    <button data-open="mines"><span class="ico">✦</span><span>Mines</span></button>
+    <button data-open="crash"><span class="ico">↗</span><span>Crash</span></button>
+    <div class="nav-title">Account</div>
+    <button id="showDev"><span class="ico">⚙</span><span>Dev Wallet</span></button>
+  </div>
+  <div class="side-card" id="devCard">
+    <b>Dev Wallet</b>
+    <p>Spawn play credits locally. They have no cash value and never leave this browser.</p>
+    <div class="mint-row"><input id="mintAmount" type="number" min="1" value="10000"><button id="mint">+</button></div>
+    <button class="reset" id="reset">Reset save</button>
+  </div>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="search">🔎 Search games</div>
+    <div style="display:flex;align-items:center">
+      <div class="wallet"><div class="balance">◎ <span id="bal">0.00</span></div><button id="walletMint">Wallet</button></div>
+      <div class="status">PLAY MONEY • NO REAL VALUE</div>
+    </div>
+  </header>
+  <div class="content">
+    <section class="hero" id="lobbyHero">
+      <div><h1>Casino energy.<br><strong>Zero real-money risk.</strong></h1><p>Steak is a fictional play-money casino sandbox. The balance is local demo credit, there are no deposits or withdrawals, and you can mint as much as you want.</p></div>
+      <div class="hero-chip"><small>Session balance</small><div>◎ <span id="heroBal">0</span></div></div>
+    </section>
+
+    <div class="section-head" id="gamesHead"><h2>Steak Originals</h2><span>Play-money games</span></div>
+    <section class="games" id="gameCards">
+      <article class="game-card"><div class="game-art">🎲</div><div class="game-info"><b>Dice</b><span>ORIGINAL</span></div><button data-open="dice">Play Dice</button></article>
+      <article class="game-card"><div class="game-art">💎</div><div class="game-info"><b>Mines</b><span>ORIGINAL</span></div><button data-open="mines">Play Mines</button></article>
+      <article class="game-card"><div class="game-art">🚀</div><div class="game-info"><b>Crash</b><span>ORIGINAL</span></div><button data-open="crash">Play Crash</button></article>
+    </section>
+
+    <section class="panel" id="gamePanel">
+      <div class="game-shell">
+        <div class="controls">
+          <div class="tabs"><button class="active">Manual</button><button disabled>Auto</button></div>
+          <div class="field"><label><span>Bet Amount</span><span>◎ credits</span></label><input id="betAmount" type="number" min="1" step="1" value="100"><div class="quick"><button data-q=".5">½</button><button data-q="2">2×</button><button data-q="10">+10</button><button data-q="100">+100</button></div></div>
+          <div class="field" id="diceFields"><label><span>Roll Under</span><span id="chanceLabel">49.50%</span></label><input id="rollUnder" type="range" min="5" max="95" step=".5" value="49.5"><label style="margin-top:9px"><span>Payout</span><b id="payoutLabel">2.00×</b></label></div>
+          <div class="field hide" id="minesFields"><label><span>Mines</span><span>5×5 grid</span></label><select id="mineCount"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div>
+          <div class="field hide" id="crashFields"><label><span>Auto Cashout</span><span>optional</span></label><input id="autoCash" type="number" min="1.01" step=".01" value="2.00"></div>
+          <button class="bet-btn" id="betBtn">Bet</button>
+          <div id="controlMsg" class="sub" style="margin-top:11px">Choose a game and place a play-money bet.</div>
+        </div>
+        <div class="game-stage">
+          <div id="diceStage" style="width:100%;text-align:center"><div class="dice-result" id="diceResult">49.50</div><div class="sub">Target: roll under <span id="targetText">49.50</span></div><div class="dice-track"><div class="dice-fill" id="diceFill"></div><div class="dice-marker" id="diceMarker"></div></div><div id="diceBanner" class="result-banner">Ready to roll</div></div>
+          <div id="minesStage" class="hide"><div class="mines-grid" id="minesGrid"></div><div class="sub" style="text-align:center;margin-top:14px">Start a round, then reveal safe tiles. Cash out any time.</div></div>
+          <div id="crashStage" class="hide" style="width:100%;display:flex;flex-direction:column;align-items:center"><div class="crash-area"><div class="mult" id="crashMult">1.00×</div><div class="rocket" id="rocket">🚀</div></div><div class="history" id="crashHistory"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="recent"><div class="recent-head"><div>Game</div><div>Bet</div><div>Payout</div><div>Result</div></div><div id="recentRows"></div></section>
+    <div class="footer">Steak is an independent fictional casino simulator. Play credits are not money, cannot be purchased, and cannot be withdrawn.</div>
+  </div>
+</main>
+</div>
+<script>
+(function(){
+const S={balance:+localStorage.getItem('steak.balance')||10000,history:JSON.parse(localStorage.getItem('steak.history')||'[]'),game:'dice',mines:null,crashHistory:JSON.parse(localStorage.getItem('steak.crash')||'[1.22,2.14,1.06,4.72,1.48,8.11]')};
+const $=id=>document.getElementById(id), money=n=>Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+function save(){localStorage.setItem('steak.balance',S.balance);localStorage.setItem('steak.history',JSON.stringify(S.history.slice(0,12)));localStorage.setItem('steak.crash',JSON.stringify(S.crashHistory.slice(0,6)));render()}
+function render(){ $('bal').textContent=money(S.balance);$('heroBal').textContent=money(S.balance);$('recentRows').innerHTML=S.history.slice(0,8).map(x=>'<div class="row"><div class="p">'+x.game+'</div><div>◎ '+money(x.bet)+'</div><div class="'+(x.profit>=0?'green':'red')+'">'+(x.profit>=0?'+':'')+money(x.profit)+'</div><div>'+x.result+'</div></div>').join('')||'<div class="row"><div class="p">No rounds yet</div><div>—</div><div>—</div><div>—</div></div>';$('crashHistory').innerHTML=S.crashHistory.map(x=>'<div class="hist '+(x>=2?'green':'')+'">'+Number(x).toFixed(2)+'×</div>').join('')}
+function history(game,bet,profit,result){S.history.unshift({game:game,bet:bet,profit:profit,result:result});save()}
+function betValue(){const v=Math.floor(+$('betAmount').value);if(!v||v<1)return 0;return v}
+function canBet(v){if(!v){msg('Enter a bet amount.');return false}if(v>S.balance){msg('Not enough play credits — mint more in Dev Wallet.');return false}return true}
+function msg(t){$('controlMsg').textContent=t}
+function setGame(g){S.game=g;document.querySelectorAll('[data-open]').forEach(b=>b.classList.toggle('active',b.dataset.open===g));['dice','mines','crash'].forEach(n=>$(n+'Stage').classList.toggle('hide',n!==g));$('diceFields').classList.toggle('hide',g!=='dice');$('minesFields').classList.toggle('hide',g!=='mines');$('crashFields').classList.toggle('hide',g!=='crash');$('betBtn').textContent=g==='mines'?'Start Mines':'Bet';S.mines=null;if(g==='mines')makeGrid();msg('Playing '+g[0].toUpperCase()+g.slice(1)+' with play credits.')}
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{if(b.dataset.open==='lobby'){window.scrollTo({top:0,behavior:'smooth'});return}setGame(b.dataset.open)});
+document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{let v=+$('betAmount').value||0,q=b.dataset.q;if(q==='.5')v/=2;else if(q==='2')v*=2;else v+=+q;$('betAmount').value=Math.max(1,Math.floor(v))});
+$('rollUnder').oninput=e=>{const t=+e.target.value;$('chanceLabel').textContent=t.toFixed(2)+'%';$('targetText').textContent=t.toFixed(2);$('payoutLabel').textContent=(99/t).toFixed(2)+'×';$('diceFill').style.width=t+'%';$('diceMarker').style.left=t+'%'};
+function playDice(){const bet=betValue();if(!canBet(bet))return;const t=+$('rollUnder').value,roll=Math.random()*100,win=roll<t,mult=99/t,profit=win?bet*(mult-1):-bet;S.balance+=profit;$('diceResult').textContent=roll.toFixed(2);$('diceBanner').className='result-banner '+(win?'win':'lose');$('diceBanner').textContent=win?'WIN +◎ '+money(profit):'LOSS -◎ '+money(bet);history('Dice',bet,profit,roll.toFixed(2))}
+function makeGrid(){const grid=$('minesGrid');grid.innerHTML='';for(let i=0;i<25;i++){const b=document.createElement('button');b.className='tile';b.textContent='◆';b.onclick=()=>revealMine(i,b);grid.appendChild(b)}}
+function startMines(){const bet=betValue();if(!canBet(bet))return;const count=+$('mineCount').value;S.balance-=bet;const ids=[...Array(25).keys()].sort(()=>Math.random()-.5).slice(0,count);S.mines={bet:bet,mines:new Set(ids),safe:0,count:count};makeGrid();$('betBtn').textContent='Cash Out';msg('Round live — pick a tile or cash out.');save()}
+function revealMine(i,b){if(!S.mines)return;if(b.classList.contains('revealed')||b.classList.contains('mine'))return;if(S.mines.mines.has(i)){b.classList.add('mine');b.textContent='💣';const bet=S.mines.bet;S.mines=null;$('betBtn').textContent='Start Mines';msg('Mine hit. Round lost.');history('Mines',bet,-bet,'💣')}else{b.classList.add('revealed');b.textContent='💎';S.mines.safe++;const mult=Math.pow(25/(25-S.mines.count),S.mines.safe)*.97;msg('Safe tile • current cashout '+mult.toFixed(2)+'×')}}
+function cashMines(){if(!S.mines)return startMines();const m=S.mines,mult=Math.pow(25/(25-m.count),m.safe)*.97,pay=m.bet*Math.max(1,mult),profit=pay-m.bet;S.balance+=pay;S.mines=null;$('betBtn').textContent='Start Mines';msg('Cashed out at '+Math.max(1,mult).toFixed(2)+'×');history('Mines',m.bet,profit,Math.max(1,mult).toFixed(2)+'×')}
+let crashBusy=false;
+function playCrash(){if(crashBusy)return;const bet=betValue();if(!canBet(bet))return;S.balance-=bet;save();crashBusy=true;$('betBtn').disabled=true;const r=Math.random(),point=Math.max(1.01,Math.min(25,0.99/(1-r))),auto=Math.max(1.01,+$('autoCash').value||2),start=performance.now();msg('Round live…');
+function tick(now){const elapsed=(now-start)/1000,current=Math.min(point,1+elapsed*elapsed*.7+elapsed*.55);$('crashMult').textContent=current.toFixed(2)+'×';$('rocket').style.left=Math.min(82,10+elapsed*18)+'%';$('rocket').style.bottom=Math.min(72,13+elapsed*12)+'%';if(current>=auto&&auto<point){const profit=bet*(auto-1);S.balance+=bet*auto;finish(profit,'Cashout '+auto.toFixed(2)+'×');return}if(current>=point){finish(-bet,'Crashed '+point.toFixed(2)+'×');return}requestAnimationFrame(tick)}
+function finish(profit,result){S.crashHistory.unshift(point);history('Crash',bet,profit,result);crashBusy=false;$('betBtn').disabled=false;$('crashMult').textContent=point.toFixed(2)+'×';msg(profit>=0?'Cashed out +◎ '+money(profit):'Crashed before cashout.')}requestAnimationFrame(tick)}
+$('betBtn').onclick=()=>{if(S.game==='dice')playDice();else if(S.game==='mines')(S.mines?cashMines():startMines());else playCrash()};
+function mint(){const a=Math.max(1,Math.floor(+$('mintAmount').value||10000));S.balance+=a;msg('Minted ◎ '+money(a)+' local play credits.');save()}
+$('mint').onclick=mint;$('walletMint').onclick=()=>{S.balance+=1000;msg('Wallet shortcut minted ◎ 1,000.00.');save()};$('reset').onclick=()=>{localStorage.removeItem('steak.balance');localStorage.removeItem('steak.history');localStorage.removeItem('steak.crash');location.reload()};$('showDev').onclick=()=>$('devCard').scrollIntoView({behavior:'smooth'});makeGrid();render();setGame('dice');
+})();
+</script>
+</body>
+</html>
