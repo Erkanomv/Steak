@@ -1,42 +1,28 @@
 # Steak
 
-Steak is a fictional, browser-only **play-money casino simulator**. It is not affiliated with Stake or any gambling operator.
+A new, browser-only Stake-style casino simulation built from scratch. The interface uses the Stake name as a fan reference and visibly identifies itself as unofficial. It is not affiliated with Stake.com.
 
-## What is included
+## Games
 
-- Dedicated animated game screens for:
-  - Plinko
-  - European Roulette
-  - Blackjack 21
-  - Mines
-  - Crash
-  - Dice
-  - Limbo
-  - Coin Flip
-  - Cases + local inventory
-  - Cups
-  - Three slot-machine themes
-  - Chicken
-- Modular front-end architecture under `assets/js/` and `assets/styles/`
-- Local browser progress saving with migration from older Steak saves
-- Fresh browsers start with **5.00 play credits**
-- Hidden local admin menu: click the Steak logo five times
-- Responsive desktop/tablet/mobile navigation
-- Web Audio feedback and game-specific animations
-- Apple-device translucent/glass treatment using CSS backdrop filters
+- Dice: editable multiplier, roll under/over, chance slider, 99% theoretical return; automatic bets with win/loss increases and profit/loss stops.
+- Mines: 5 × 5 board, 1–24 mines, combinatorial cashout multipliers and random tile selection.
+- Plinko: 8–16 rows, three risk levels, multiple simultaneous balls and animated peg paths.
+- Limbo: target multiplier, instant mode, automated bets and 99% theoretical return before display rounding.
+- Crash: animated multiplier graph, manual and automatic cashout.
+- Blackjack: hit, stand, double, 3:2 blackjack and dealer stands on 17.
+- European Roulette: red, black, single zero and straight number bets.
+- Slots: three reels with a visible paytable.
 
-## Play-money only
+Fresh saves start with 1,000 simulated STK. The Wallet grants free refills. Balances, history and settings are saved locally under `steak.rebuild.v1`, separate from previous versions. Leaving a game refunds any unresolved bets. No external fonts or image services are required.
 
-Credits have no cash value. The project includes no deposits, withdrawals, payment processing, crypto transfers, or real-money wagering.
+## Run
 
-## Running locally
-
-Serve the repository over HTTP so ES modules load correctly, for example:
-
-```bash
+```sh
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Open http://localhost:8000. No package installation or build step is required. GitHub Pages deployment uses the existing workflow.
 
-GitHub Pages deployment is configured in `.github/workflows/pages.yml`.
+## Scope
+
+All credits have no monetary value. There are no payment systems, crypto transfers, deposits, withdrawals or real-money wagers. This independent implementation does not reproduce Stake's proprietary source, hosted games, accounts, multiplayer services or provably-fair seed protocol. Random values come from `crypto.getRandomValues` in the browser.
